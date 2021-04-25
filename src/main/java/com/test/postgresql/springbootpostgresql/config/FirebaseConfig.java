@@ -3,6 +3,8 @@ package com.test.postgresql.springbootpostgresql.config;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,31 +19,30 @@ import com.test.postgresql.springbootpostgresql.controller.model.SecurityPropert
 @Configuration
 public class FirebaseConfig {
 
-	 @Autowired
-	    SecurityProperties secProps;
+	@Autowired
+	SecurityProperties secProps;
 
-	    @Primary
-	    @Bean
-	    public void firebaseInit() {
-	        InputStream inputStream = null;
-	        try {
-	            inputStream = new ClassPathResource("firebase_config.json").getInputStream();
-	        } catch (IOException e3) {
-	            e3.printStackTrace();
-	        }
-	        try {
+	
+	@PostConstruct
+	public void firebaseInit() {
+		InputStream inputStream = null;
+		try {
+			inputStream = new ClassPathResource("firebase_config.json").getInputStream();
+		} catch (IOException e3) {
+			e3.printStackTrace();
+		}
+		try {
 
-	            FirebaseOptions options = new FirebaseOptions.Builder()
-	                    .setCredentials(GoogleCredentials.fromStream(inputStream))
-	                    .build();
+			FirebaseOptions options = new FirebaseOptions.Builder()
+					.setCredentials(GoogleCredentials.fromStream(inputStream)).build();
 
-	            if (FirebaseApp.getApps().isEmpty()) {
-	                FirebaseApp.initializeApp(options);
-	            }
-	            System.out.println("Firebase Initialize");
+			if (FirebaseApp.getApps().isEmpty()) {
+				FirebaseApp.initializeApp(options);
+			}
+			System.out.println("Firebase Initialize");
 
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
